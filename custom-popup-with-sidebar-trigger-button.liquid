@@ -1,0 +1,378 @@
+{%- style -%}
+  #NewsletterPopup-{{ section.id }} {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 999999;
+    background: rgba(10, 15, 12, 0.75); 
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    backdrop-filter: blur(3px);
+  }
+
+  .popup-modal-main {
+    background-color: {{ section.settings.bg_color }};
+    width: 100%;
+    max-width: 950px;
+    display: flex;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: popupFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .popup-tab-trigger-{{ section.id }} {
+    position: fixed;
+    top: {{ section.settings.trigger_vertical_pos }}%;
+    {% if section.settings.trigger_side == 'left' %}
+      left: 0;
+      border-radius: 0 12px 12px 0;
+    {% else %}
+      right: 0;
+      border-radius: 12px 0 0 12px;
+    {% endif %}
+    background-color: {{ section.settings.trigger_bg }};
+    color: {{ section.settings.trigger_text_color }};
+    padding: 18px 12px;
+    cursor: pointer;
+    z-index: 999998;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: translateY(-50%);
+    font-size: {{ section.settings.trigger_font_size }}px;
+    font-weight: {{ section.settings.trigger_font_weight }};
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .popup-tab-trigger-{{ section.id }}:hover {
+    padding-{% if section.settings.trigger_side == 'left' %}left{% else %}right{% endif %}: 20px;
+    background-color: {{ section.settings.btn_hover_color }};
+  }
+
+  .popup-editorial-column {
+    flex: 1.2;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .popup-atmosphere-column {
+    flex: 1;
+    {% if section.settings.image != blank %}
+      background-image: url('{{ section.settings.image | img_url: '1000x' }}');
+    {% else %}
+      background-color: #f2f2f2;
+    {% endif %}
+    background-size: cover;
+    background-position: center;
+    min-height: 550px;
+  }
+
+  .popup-exit-button {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+    font-size: 24px;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    color: #000;
+    line-height: 0; 
+    padding-bottom: 2px;
+    transition: transform 0.2s ease;
+  }
+
+  .popup-exit-button:hover {
+    transform: rotate(90deg);
+  }
+
+  .popup-primary-title {
+    color: {{ section.settings.heading_color }};
+    font-size: {{ section.settings.heading_size }}px;
+    font-weight: {{ section.settings.heading_weight }};
+    margin: 0 0 16px 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .popup-message-body {
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.text_size }}px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .popup-input-field {
+    width: 100%;
+    padding: 16px 20px;
+    border: 1px solid #d1d1d1;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+    background: #fff;
+  }
+
+  .popup-input-field:focus {
+    border-color: {{ section.settings.btn_color }};
+    box-shadow: 0 0 0 2px color-mix(in srgb, {{ section.settings.btn_color }} 20%, transparent);
+    outline: none;
+  }
+
+  .popup-submit-action {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 8px;
+    background-color: {{ section.settings.btn_color }};
+    color: {{ section.settings.btn_text_color }};
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .popup-submit-action:hover {
+    background-color: {{ section.settings.btn_hover_color }};
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -10px {{ section.settings.btn_color }};
+  }
+
+  .popup-reassurance-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding-top: 30px;
+    gap: 15px;
+  }
+
+  .reassurance-item {
+    text-align: center;
+    flex: 1;
+  }
+
+  .reassurance-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    filter: grayscale(0.2);
+  }
+
+  .reassurance-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: {{ section.settings.text_color }};
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .reassurance-label strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: {{ section.settings.heading_color }};
+  }
+
+  @keyframes popupFadeIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @media (max-width: 768px) {
+    .popup-modal-main { flex-direction: column-reverse; max-width: 92%; max-height: 90vh; }
+    .popup-atmosphere-column { min-height: 220px; }
+    .popup-editorial-column { padding: 40px 24px; }
+    .popup-primary-title { font-size: 32px; }
+    .popup-reassurance-footer { gap: 10px; }
+    .reassurance-item { flex: 1 1 30%; }
+    .popup-exit-button { right: 12px; top: 12px; width: 36px; height: 40px; }
+  }
+{%- endstyle -%}
+
+<!-- Human Interaction: Floating Trigger -->
+{% if section.settings.show_trigger %}
+  <button class="popup-tab-trigger-{{ section.id }}" 
+          onclick="openHumanPopup{{ section.id | replace: '-', '' }}()"
+          aria-label="Open newsletter offer">
+    {{ section.settings.trigger_label }}
+  </button>
+{% endif %}
+
+<div id="NewsletterPopup-{{ section.id }}" class="newsletter-popup-overlay" role="dialog" aria-modal="true">
+  <div class="popup-modal-main">
+    <button class="popup-exit-button" 
+            onclick="closeHumanPopup{{ section.id | replace: '-', '' }}()"
+            aria-label="Close popup">×</button>
+    
+    <div class="popup-editorial-column">
+      {%- if section.settings.logo_svg != blank -%}
+        <header style="text-align:center; margin-bottom: 32px;">{{ section.settings.logo_svg }}</header>
+      {%- endif -%}
+
+      <h2 class="popup-primary-title">{{ section.settings.heading }}</h2>
+      <div class="popup-message-body">{{ section.settings.subtext }}</div>
+
+      <div class="popup-form-container">
+        {% form 'customer', id: 'ContactPopup' %}
+          <input type="hidden" name="contact[tags]" value="newsletter, subscriber">
+          
+          {%- if form.posted_successfully? -%}
+             <div id="PopupSuccess-{{ section.id }}" role="alert">
+               <p style="color: #2e7d32; background: #edf7ed; padding: 16px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 18px;">
+                 Subscribed! Check your email.
+               </p>
+             </div>
+             <script>
+               document.addEventListener('DOMContentLoaded', () => {
+                 const popup = document.getElementById('NewsletterPopup-{{ section.id }}');
+                 popup.style.display = 'flex';
+                 setTimeout(() => { popup.style.opacity = '0'; setTimeout(() => popup.style.display = 'none', 500); }, 4000);
+               });
+             </script>
+          {%- else -%}
+            <div class="newsletter-form__field">
+              <input
+                id="NewsletterForm--{{ section.id }}"
+                type="email"
+                name="contact[email]"
+                class="popup-input-field"
+                value="{{ form.email }}"
+                placeholder="Email address"
+                required
+                autocomplete="email"
+              >
+            </div>
+            <button type="submit" class="popup-submit-action" name="commit">
+              {{ section.settings.btn_label }}
+            </button>
+          {%- endif -%}
+        {% endform %}
+      </div>
+
+      {% if section.blocks.size > 0 %}
+      <footer class="popup-reassurance-footer">
+         {% for block in section.blocks %}
+           <div class="reassurance-item" {{ block.shopify_attributes }}>
+             {% if block.settings.icon != blank %}
+               <img src="{{ block.settings.icon | img_url: '80x' }}" class="reassurance-icon" alt="{{ block.settings.title }}" loading="lazy">
+             {% endif %}
+             <span class="reassurance-label">
+               <strong>{{ block.settings.title }}</strong>
+               {{ block.settings.sub_title }}
+             </span>
+           </div>
+         {% endfor %}
+      </footer>
+      {% endif %}
+    </div>
+
+    <div class="popup-atmosphere-column"></div>
+  </div>
+</div>
+
+<script>
+  function closeHumanPopup{{ section.id | replace: '-', '' }}() {
+    const el = document.getElementById('NewsletterPopup-{{ section.id }}');
+    el.style.display = 'none';
+    {% unless section.settings.test_mode %}
+      localStorage.setItem('newsletter_popup_closed', 'true');
+    {% endunless %}
+  }
+
+  function openHumanPopup{{ section.id | replace: '-', '' }}() {
+    document.getElementById('NewsletterPopup-{{ section.id }}').style.display = 'flex';
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    {% if form.posted_successfully? %} return; {% endif %}
+
+    const isClosed = localStorage.getItem('newsletter_popup_closed');
+    const delay = {{ section.settings.delay }} * 1000;
+    const isTestMode = {{ section.settings.test_mode | json }};
+    const isDesignMode = window.Shopify && window.Shopify.designMode;
+
+    if (isTestMode || (!isClosed || isDesignMode)) {
+      setTimeout(() => {
+        openHumanPopup{{ section.id | replace: '-', '' }}();
+      }, delay);
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Newsletter Popup",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "test_mode",
+      "label": "Enable Test Mode",
+      "default": false,
+      "info": "Popup shows every time you refresh. Uncheck for live store."
+    },
+    { "type": "image_picker", "id": "image", "label": "Side Image" },
+    { "type": "html", "id": "logo_svg", "label": "Logo SVG Code (Optional)" },
+    { "type": "range", "id": "delay", "min": 1, "max": 20, "step": 1, "unit": "sec", "label": "Delay to show", "default": 3 },
+    { "type": "header", "content": "Trigger Tab (Sidebar)" },
+    { "type": "checkbox", "id": "show_trigger", "label": "Show Trigger Tab", "default": true },
+    { "type": "text", "id": "trigger_label", "label": "Tab Text", "default": "Get 15% OFF" },
+    { "type": "select", "id": "trigger_side", "label": "Side", "options": [
+        {"value": "left", "label": "Left"}, {"value": "right", "label": "Right"}
+      ], "default": "left" },
+    { "type": "range", "id": "trigger_vertical_pos", "min": 10, "max": 90, "step": 1, "unit": "%", "label": "Vertical Position", "default": 50 },
+    { "type": "color", "id": "trigger_bg", "label": "Tab Background", "default": "#1a241e" },
+    { "type": "color", "id": "trigger_text_color", "label": "Tab Text Color", "default": "#ffffff" },
+    { "type": "range", "id": "trigger_font_size", "min": 10, "max": 20, "step": 1, "unit": "px", "label": "Tab Font Size", "default": 13 },
+    { "type": "select", "id": "trigger_font_weight", "label": "Tab Font Weight", "options": [
+        {"value": "400", "label": "Normal"}, {"value": "700", "label": "Bold"}
+      ], "default": "700" },
+    { "type": "header", "content": "Editorial Text" },
+    { "type": "text", "id": "heading", "label": "Main Title", "default": "15% OFF" },
+    { "type": "color", "id": "heading_color", "label": "Title Color", "default": "#1a241e" },
+    { "type": "range", "id": "heading_size", "min": 24, "max": 80, "step": 2, "unit": "px", "label": "Title Font Size", "default": 56 },
+    { "type": "select", "id": "heading_weight", "label": "Title Font Weight", "options": [
+        {"value": "300", "label": "Light"}, {"value": "400", "label": "Normal"}, {"value": "700", "label": "Bold"}, {"value": "800", "label": "Extra Bold"}
+      ], "default": "400" },
+    { "type": "richtext", "id": "subtext", "label": "Body Message", "default": "<p>Join the community and enjoy 15% off your first order.</p>" },
+    { "type": "color", "id": "text_color", "label": "Text Color", "default": "#444444" },
+    { "type": "range", "id": "text_size", "min": 12, "max": 20, "step": 1, "unit": "px", "label": "Body Font Size", "default": 16 },
+    { "type": "header", "content": "Colors & Buttons" },
+    { "type": "color", "id": "bg_color", "label": "Content Area Background", "default": "#f9f6f1" },
+    { "type": "text", "id": "btn_label", "label": "Action Button Label", "default": "Unlock 15% Off" },
+    { "type": "color", "id": "btn_color", "label": "Button Background", "default": "#1a241e" },
+    { "type": "color", "id": "btn_text_color", "label": "Button Text Color", "default": "#ffffff" },
+    { "type": "color", "id": "btn_hover_color", "label": "Button Hover Color", "default": "#2c3e32" }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Trust Badge",
+      "limit": 3,
+      "settings": [
+        { "type": "image_picker", "id": "icon", "label": "Icon (PNG/SVG)" },
+        { "type": "text", "id": "title", "label": "Badge Title", "default": "100%" },
+        { "type": "text", "id": "sub_title", "label": "Badge Sub-text", "default": "Grass-Fed" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Newsletter Popup" }]
+}
+{% endschema %}
