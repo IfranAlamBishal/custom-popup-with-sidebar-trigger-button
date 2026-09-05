@@ -111,7 +111,6 @@ The section is fully customizable through the Shopify Theme Editor and optimized
    - Button background color
   
    - Button text color
-  <img width="1400" height="650" alt="Screenshot_211" src="https://github.com/user-attachments/assets/c0bcc591-bd35-479d-a690-3945efed932e" />
 
    - Hover color
   
